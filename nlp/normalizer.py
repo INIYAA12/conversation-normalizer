@@ -1,8 +1,9 @@
 import json
+import string
 
-# load slang dictionary
 with open("nlp/slang_dictionary.json") as f:
     slang_dict = json.load(f)
+
 
 def normalize_text(text):
 
@@ -11,20 +12,29 @@ def normalize_text(text):
     normalized_words = []
 
     for word in words:
+
+        word = word.strip(string.punctuation)
+
         if word in slang_dict:
-            normalized_words.append(slang_dict[word])
+            replacement = slang_dict[word]
+
+            if replacement != "":
+                normalized_words.append(replacement)
         else:
             normalized_words.append(word)
 
-    result = " ".join(normalized_words)
+    sentence = " ".join(normalized_words)
 
-    return result
+    # Capitalize first letter
+    sentence = sentence.capitalize()
 
+    # Add punctuation if missing
+    if not sentence.endswith("."):
+        sentence += "."
+
+    return sentence
 
 if __name__ == "__main__":
-
     sentence = input("Enter sentence: ")
-
-    output = normalize_text(sentence)
-
-    print("Normalized:", output)
+    result = normalize_text(sentence)
+    print("Normalized:", result)
