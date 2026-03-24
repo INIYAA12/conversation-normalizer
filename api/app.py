@@ -19,9 +19,10 @@ def home():
 @app.post("/normalize")
 def normalize(data: TextInput):
 
-    result = normalize_text(data.text)
+    result, changes = normalize_text(data.text)
 
     return {
         "original": data.text,
-        "normalized": result
+        "normalized": result,
+        "changes": changes
     }
