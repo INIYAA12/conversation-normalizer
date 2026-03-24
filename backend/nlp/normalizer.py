@@ -2,7 +2,6 @@ import spacy
 
 nlp = spacy.load("en_core_web_sm")
 
-# slang dictionary
 slang_dict = {
     "bro": "brother",
     "idk": "I don't know",
@@ -10,24 +9,35 @@ slang_dict = {
     "r": "are",
     "rn": "right now",
     "gonna": "going to",
-    "wanna": "want to",
-    "lol": "laughing",
+    "lol": ""
 }
 
 def normalize_text(text):
 
-    doc = nlp(text)
+    doc = nlp(text.lower())
 
     words = []
+    changes = []
 
     for token in doc:
-        word = token.text.lower()
+        word = token.text
 
         if word in slang_dict:
-            words.append(slang_dict[word])
+            replacement = slang_dict[word]
+
+            if replacement != "":
+                words.append(replacement)
+
+                changes.append({
+                    "from": word,
+                    "to": replacement
+                })
         else:
-            words.append(token.text)
+            words.append(word)
 
-    normalized_sentence = " ".join(words)
+    sentence = " ".join(words).capitalize()
 
-    return normalized_sentence
+    if not sentence.endswith((".", "!", "?")):
+        sentence += "."
+
+    return sentence, changes

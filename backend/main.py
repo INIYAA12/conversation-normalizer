@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from nlp.normalizer import normalize_text
+from backend.nlp.normalizer import normalize_text
 
 app = FastAPI()
 
@@ -14,9 +14,10 @@ def home():
 @app.post("/normalize")
 def normalize(data: TextInput):
 
-    result = normalize_text(data.text)
+    result, changes = normalize_text(data.text)
 
     return {
         "original": data.text,
-        "normalized": result
+        "normalized": result,
+        "changes": changes
     }
